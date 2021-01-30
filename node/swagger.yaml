@@ -1,0 +1,506 @@
+swagger: "2.0"
+info:
+  description: "Api para gestionar las operaciones CRUD de un restaurante"
+  version: "1.0.0"
+  title: "Delilah Restó"
+
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:5000"
+basePath: "/v1"
+tags:
+- name: "Usuarios"
+  description: "servicios para los usuarios"
+- name: "producto"
+  description: "Servicios para los productos"
+- name: "Pedidos"
+  description: "Operaciones para realizar pedidos"
+
+schemes:
+- "https"
+- "http"
+paths:
+  /api/usuarios/registro:
+    post:
+      tags:
+      - "Usuarios"
+      summary: "realiza el registro de un usuario"
+      description: "especifica el rol de cada usuario utilizando 5 para administrador y 6 para usuario "
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "crea el objeto usuario"
+        required: true
+        schema:
+          $ref: "#/definitions/usuario"
+      responses:
+        "200":
+          description: "Usuario Agregado Exitosamente"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "409":
+          description: "El usuario ya existe"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema: 
+            $ref: "#/definitions/status_mensaje"
+            
+  /api/sign:
+    post:
+      tags:
+      - "Usuarios"
+      summary: "verifica el usuario y la contraseña"
+      description: "envia un token para poder realizar el resto de las operaciones CRUD"
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/user_sign_req"
+      responses:
+        "200":
+          description: "has iniciado sesión"
+          schema:
+           $ref: "#/definitions/user_sign_res"
+        "412":
+          description: "datos incompletos"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "404":
+          description: "el usuariono existe"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "403":
+          description: "usuario o contraseña incorrectas"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+            
+  /api/usuarios:
+    get:
+      security:
+       - Bearer: []
+      tags:
+      - "Usuarios"
+      summary: "obtiene toda la información del usuario"
+      description: "entrega los datos del usuario que inicia sesión. se requiere enviar el token en el header de autorizathion"
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+       
+      responses:
+        "200":
+          description: "Operación Exitosa"
+          schema:
+           $ref: "#/definitions/usuario"
+        "401":
+          description: "No Autorizado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+  
+  /api/productos:
+    get:
+      tags:
+      - "producto"
+      summary: "obtiene toda la información de los productos"
+      description: "entrega un array de todos los productos"
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        description: "Ingresa usuario y contraseña para realizar esta acción"
+        required: false
+        type: "string"
+       
+      responses:
+        "200":
+          description: "Operación Exitosa"
+          schema:
+           $ref: "#/definitions/productos"
+        "401":
+          description: "No Autorizado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+            
+
+    post:
+      security:
+        - Bearer: []
+      tags:
+      - "producto"
+      summary: "Ingresa un producto nuevo"
+      description: "ingresa un producto nuevo"
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Ingresa un producto con las propiedades especificadas"
+        required: true
+        schema:
+          $ref: "#/definitions/productos"
+      responses:
+        "200":
+          description: "Producto agregado exitosamente"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "403":
+          description: "solo el Administrador puede realizar esta acción"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "409":
+          description: "El producto  ya existe"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema: 
+            $ref: "#/definitions/status_mensaje"
+            
+    put:
+      security:
+        - Bearer: []
+      tags:
+      - "producto"
+      summary: "modifica el nombre y precio de un producto"
+      description: ""
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/productos"
+      responses:
+        "200":
+          description: "Producto actualizado con éxito"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "403":
+          description: "solo el Administrador puede realizar esta acción"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema: 
+            $ref: "#/definitions/status_mensaje"
+            
+    delete:
+      security:
+        - Bearer: []
+      tags:
+      - "producto"
+      summary: "elimina un producto"
+      description: "elimina un producto"
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/productos_delete"
+      responses:
+        "200":
+          description: "Producto eliminado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "403":
+          description: "solo el Administrador puede realizar esta acción"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema: 
+            $ref: "#/definitions/status_mensaje"
+            
+  /api/pedidos:
+    get:
+      security:
+        - Bearer: []
+      tags:
+      - "Pedidos"
+      summary: "obtiene toda la lista de los pedidos"
+      description: ""
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+      responses:
+        "200":
+          description: "Operación Exitosa"
+          schema:
+           $ref: "#/definitions/pedido_orden"
+        "401":
+          description: "No Autorizado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "403":
+          description: "solo el administrador puede realizar esta acción"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        
+  /api/pedidos/misordenes:
+    get:
+      security:
+        - Bearer: []
+      tags:
+      - "Pedidos"
+      summary: "obtiene toda la lista de pedidos que realiza el usuario"
+      description: ""
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+      responses:
+        "200":
+          description: "Operación Exitosa"
+          schema:
+           $ref: "#/definitions/pedido_orden"
+        "401":
+          description: "No Autorizado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "403":
+          description: "solo el usuario logueado puede realizar esta acción"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+      
+  /api/pedidos/estado:
+    put:
+      security:
+        - Bearer: []
+      tags:
+      - "Pedidos"
+      summary: "Actualiza el estado de un pedido"
+      description: ""
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Ingresa el id del pedido y un estado nuevo"
+        required: true
+        schema:
+          $ref: "#/definitions/pedido_miorden"
+      responses:
+        "200":
+          description: "Operación Exitosa"
+        "401":
+          description: "No Autorizado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "403":
+          description: "solo el administrador puede realizar esta acción"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+      
+      
+    
+securityDefinitions:
+
+  Bearer:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+    
+definitions:
+  usuario:
+    type: "object"
+   
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      user:
+        type: "string"
+        format: "int64"
+      fullname:
+        type: "string"
+       
+      email:
+        type: "string"
+       
+      phone:
+        type: "integer"
+       
+      address:
+        type: "string"
+       
+      password:
+        type: "string"
+       
+      role_id:
+        type: "number"
+  status_mensaje:
+      type: "object"
+      properties:
+        status: 
+          type: "string"
+        mensaje:
+          type: "string"
+  user_sign_req:
+    type: "object"
+    properties:
+      user:
+        type: "string"
+      password:
+        type: "string"
+  user_sign_res:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+      mensaje:
+        type: "string"
+      user:
+        type: "string"
+      token:
+        type: "string"
+  productos:
+      type: "array"
+      items: 
+        type: "object"
+        properties:
+          id: 
+            type: "integer"
+          nombre:
+            type: "string"
+          precio:
+            type: "string"
+          stock:
+            type: "string"
+  productos_delete:
+      type: "object"
+      properties:
+        nombre: 
+          type: "string"
+  pedido_orden:
+      type: "array"
+      items: 
+        type: "object"
+        properties:
+          id: 
+            type: "integer"
+          id_usuario:
+            type: "integer"
+          estado:
+            type: "string"
+          fecha:
+            type: "string"
+          forma de pago:
+            type: "string"
+          total:
+            type: "string"
+  pedido_miorden:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      estado:
+        type: "string"
+        
