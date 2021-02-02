@@ -22,7 +22,7 @@ app.listen(app.get('port'),()=>{
     console.log('servidor iniciado');
 })
 
-
+/*
 app.use((err, req, res, next) => {
     if (!err) {
         next();
@@ -32,3 +32,4 @@ app.use((err, req, res, next) => {
     }
 })
 
+*/
