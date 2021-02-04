@@ -399,6 +399,83 @@ paths:
           schema:
             $ref: "#/definitions/status_mensaje"
       
+  /api/pedidos/nuevo_pedido:
+    post:
+      tags:
+      - "Pedidos"
+      summary: "realiza un pedido"
+      description: ""
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "crea un nuevo pedido"
+        required: true
+        schema:
+          $ref: "#/definitions/pedidos"
+      responses:
+        "200":
+          description: "Operación Exitosa"
+        "401":
+          description: "No Autorizado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "403":
+          description: "solo el administrador puede realizar esta acción"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+            
+  /api/pedidos/:
+    delete:
+      tags:
+      - "Pedidos"
+      summary: "elimina un pedido"
+      description: ""
+      operationId: ""
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "ingresa el id del pedido"
+        required: true
+        schema:
+          $ref: "#/definitions/eliminar"
+      responses:
+        "200":
+          description: "Operación Exitosa"
+        "401":
+          description: "No Autorizado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "403":
+          description: "solo el administrador puede realizar esta acción"
+          schema:
+            $ref: "#/definitions/status_mensaje"
+        "500":
+          description: "Error inesperado"
+          schema:
+            $ref: "#/definitions/status_mensaje"
       
     
 securityDefinitions:
@@ -503,4 +580,25 @@ definitions:
         type: "string"
       estado:
         type: "string"
+  pedidos:
+    type: "object"
+    properties:
+      id_usuario:
+        type: "integer"
+      estado: 
+        type: "string"
+      fecha: 
+        type: "string"
+      forma_pago: 
+        type: "integer"
+      total: 
+        type: "integer"
+  eliminar:
+    type: "object"
+    properties:
+      id_pedido:
+        type: "integer"
+        
+      
+        
         

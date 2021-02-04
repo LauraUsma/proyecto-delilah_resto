@@ -94,24 +94,13 @@ router.get('/', verificar_role, (req , res)=>{
 //************************ */
 
 async function insertar_pedido(pedidos) {
-  //let arrayPedido = Object.values(pedido)
   let { id_usuario, estado, fecha, forma_pago, total} = pedidos;
 
   let resultado = await sequelize.query('INSERT INTO pedidos ( id_usuario, estado, fecha, forma_pago, total) VALUES ( ?, ?, ?, ?, ? )', {
       replacements: [ id_usuario, estado, fecha, forma_pago, total]
   });
   
-  //console.log(resultado); [id, ok]
-  let id = resultado[0];
-
-  let {detalles} = pedidos;
-
-  for (i=0; i < detalles.length ; i++){
-      let resultado2 = sequelize.query('INSERT INTO detalle_pedidos (id, id_pedido,  id_producto, cantidad, total_detalle) VALUES ( ?, ?, ?, ?, ?)', {
-          replacements: [id, id, detalles[i].id_producto, detalles[i].cantidad, detalles[i].total_detalle]
-      });
-  }
-
+  
       
   return resultado;
 }
@@ -119,8 +108,6 @@ async function insertar_pedido(pedidos) {
 
 router.post('/nuevo_pedido', estadodelpedido,(req, res) => {
     
-  
-
   insertar_pedido(req.body)
       .then(responses => 
           
@@ -133,41 +120,23 @@ router.post('/nuevo_pedido', estadodelpedido,(req, res) => {
 
 
 
-
-
-
-
-
-
-
 //Delete para borrar pedidos
 
 
 async function Borrar_pedido(pedidos) {
   let { id_pedido} = pedidos;
-
-  let resultado = await sequelize.query('DELETE FROM detalle_pedidos WHERE id_pedido =?', {
-      replacements: [id_pedido]
-  });
-  
-  let id = resultado[0];
-
-  let {detalles} = pedidos;
-
-  for (i=0; i < detalles.length ; i++){
-      let resultado2 = sequelize.query('`SET FOREIGN_KEY_CHECKS = 0; DELETE FROM pedidos WHERE id = ?; SET FOREIGN_KEY_CHECKS = 1;', {
-          replacements: [ detalles[i].id]
-      });
-  }
-
+ 
+let resultado_1 = await sequelize.query(' DELETE  FROM pedidos WHERE id = ?', {
+    replacements: [id_pedido]
+});
       
-  return resultado;
+  return resultado_1;
+ 
 }
 
 
 
 router.delete('/', verificar_role, (req, res) => {
-  //let{ id}=req.body;
   
   Borrar_pedido(req.body)
          .then(proyects => res.status(200).send({
@@ -182,25 +151,5 @@ router.delete('/', verificar_role, (req, res) => {
 
 
 
-
-/*
-
-router.delete('/', verificar_role, (req, res) => {
-  let{ id}=req.body;
-  
-     sequelize.query(` DELETE FROM detalle_pedidos WHERE id = ?`, {
-         replacements: [id]
-     })
- 
-         .then(proyects => res.status(200).send({
-             status: 'OK',
-             mensaje: 'Pedido Eliminado'
-         }))
-         .catch(err => console.log(err));
- })
- 
-
- 
-*/
 
 module.exports=  router;  

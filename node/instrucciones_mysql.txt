@@ -98,6 +98,8 @@ ALTER TABLE `detalle_pedidos`
   ADD CONSTRAINT `detalle_pedidos_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `detalle_pedidos_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id`) ON UPDATE CASCADE;
 
+
+
 --
 -- Filtros para la tabla `pedidos`
 --
