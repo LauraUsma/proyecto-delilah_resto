@@ -99,11 +99,25 @@ async function insertar_pedido(pedidos) {
   let resultado = await sequelize.query('INSERT INTO pedidos ( id_usuario, estado, fecha, forma_pago, total) VALUES ( ?, ?, ?, ?, ? )', {
       replacements: [ id_usuario, estado, fecha, forma_pago, total]
   });
+  console.log('resultado nuevo pedido' + resultado);
+
+
+  let {detalles} = pedidos;
+  console.log('detalles' + detalles[0].id_producto, detalles[0].cantidad,  detalles[0].total_detalle);
+
+  let resultado2;
+  for (i=0; i < detalles.length ; i++){
+     resultado2 = await sequelize.query('INSERT INTO detalle_pedidos ( id_pedido, id_producto, cantidad, total_detalle) VALUES ( ?, ?, ?, ? )', {
+      replacements: [ resultado[0],  detalles[i].id_producto, detalles[i].cantidad,  detalles[i].total_detalle]
+    });
+    console.log('resultado detalle pedido' + resultado2);
   
+  }
   
       
   return resultado;
 }
+
 
 
 router.post('/nuevo_pedido', estadodelpedido,(req, res) => {
